@@ -11,7 +11,7 @@ from collections import Counter
 GRAPHQL_API = "https://api-gateway.skymavis.com/graphql/axie-marketplace"
 API_KEY = "9OmYe8nfDz41ntODED0ka6NGzBHkLjHP"
 OWNER = '0xfda275dc5b3162fddf7a5b9b10734efc85573a46'
-OUTPUT_CSV = "/Users/viktorvasilev/AxieWeb/AxieWeb-AXP-Test/decoded_axies.csv"
+OUTPUT_CSV = "decoded_axies.csv"
 PROJECT_PATH = "/Users/viktorvasilev/AxieWeb/AxieWeb-AXP-Test"
 
 BATCH_SIZE_FIRST_REQUEST = 600
