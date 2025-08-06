@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="bg">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>AXP Analytics</title>
+  <link rel="icon" href="logo1.png" type="image/png">
+
+  <!-- 📚 Библиотеки -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+  <!-- 🎨 Стилове -->
+  <link rel="stylesheet" href="CSS/styles.css" />
+</head>
+
+<body>
+
+  <!-- 🟦 Sidebar с филтри и бутони -->
+  <div class="sidebar">
+    <div id="filterCollectionSwitch"></div>
+    <div id="All Accounts"></div>
+    <div id="ascendFilterContainer">
+      <button id="ascendFilterBtn">🔼 Ascend Only</button>
+    </div>
+    <div id="filterClassButtons" class="class-buttons"></div>
+    <select id="filterBreed" style="display: none;">
+      <option value="">Всички Breed</option>
+    </select>
+    <select id="filterLevel" style="display: none;">
+      <option value="">Всички Level</option>
+    </select>
+    <div id="levelInputContainer">
+      <div id="levelSliderContainer"></div>
+      <div id="levelSliderValue">Level: 1</div>
+      <div id="puritySliderContainer"></div>
+    </div>
+    <input type="text" id="filterGene" placeholder="Part" />
+  </div>
+
+  <!-- 🟨 Основна част: меню + Axie карти -->
+  <main class="main-content">
+
+    <!-- ❌ Премахнато: globalMenu2 -->
+
+    <!-- 🌍 Глобално меню (ще скрием частично чрез JS) -->
+    <div id="globalMenu">
+      <div id="viewSwitcher" class="view-switcher"></div>
+    </div>
+
+    <!-- ⏳ Зареждащ спинър -->
+    <div id="loadingSpinner" class="epic-spinner">
+      <div class="half-circle-spinner">
+        <div class="circle circle-1"></div>
+        <div class="circle circle-2"></div>
+      </div>
+      <div class="spinner-text">AXP Loading...</div>
+    </div>
+
+    <!-- 🧬 Axie карти -->
+    <div class="container" id="axieContainer"></div>
+  </main>
+
+  <!-- 📦 Скриптове (ЗАДЪЛЖИТЕЛЕН ред на зареждане) -->
+  <script type="module" src="JS/config.js"></script>
+  <script type="module" src="JS/global-menu/global-menu-data-extract.js"></script>
+  <script type="module" src="JS/global-menu/sorting-global-menu.js"></script>
+  <script type="module" src="JS/global-menu/menu.js"></script>
+
+  <!-- ❌ НЕ зареждаме mementobuttons.js -->
+
+  <script src="JS/global-menu/updateAXPSum.js" defer></script>
+  <script type="module" src="/JS/axp-loader.js"></script>
+  <script type="module" src="JS/view-controller.js"></script>
+  <script type="module" src="JS/main.js"></script>
+  <script type="module" src="JS/ui/filterGene.js"></script>
+
+  <!-- 🧪 Симулация -->
+  <script type="module">
+    import { attachSimulationListeners, applySimulationToVisibleCards } from './JS/simulation/simulation-runner.js';
+    attachSimulationListeners();
+    if (window.__AXIE_SIMULATION__?.enabled) {
+      requestAnimationFrame(applySimulationToVisibleCards);
+    }
+  </script>
+
+  <!-- ✅ Скриваме ненужни неща + изчакваме AXP бутона -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const viewSwitcher = document.getElementById("viewSwitcher");
+      if (viewSwitcher) viewSwitcher.style.display = "none";
+
+      // Изчакваме да се появи бутона за AXP
+      const tryActivateAXP = setInterval(() => {
+        const axpBtn = document.querySelector('button[data-view="axp"]');
+        if (axpBtn) {
+          axpBtn.click(); // активира AXP изгледа
+          clearInterval(tryActivateAXP);
+        }
+      }, 100);
+    });
+  </script>
+
+</body>
+
+</html>
