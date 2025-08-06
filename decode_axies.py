@@ -1,4 +1,4 @@
-import subprocess
+
 from datetime import datetime, timedelta, timezone
 import requests
 import csv
@@ -12,37 +12,10 @@ GRAPHQL_API = "https://api-gateway.skymavis.com/graphql/axie-marketplace"
 API_KEY = "9OmYe8nfDz41ntODED0ka6NGzBHkLjHP"
 OWNER = '0xfda275dc5b3162fddf7a5b9b10734efc85573a46'
 OUTPUT_CSV = "decoded_axies.csv"
-PROJECT_PATH = "/Users/viktorvasilev/AxieWeb/AxieWeb-AXP-Test"
 
 BATCH_SIZE_FIRST_REQUEST = 600
 BATCH_SIZE_SECOND_REQUEST = 50
 BATCH_DELAY_S = 0.5
-
-
-def upload_csv_to_github():
-    try:
-        subprocess.run(["git", "-C", PROJECT_PATH, "add",
-                       "decoded_axies.csv"], check=True)
-        subprocess.run(["git", "-C", PROJECT_PATH, "commit",
-                       "-m", "♻️ Auto-update decoded_axies.csv"], check=True)
-        subprocess.run(["git", "-C", PROJECT_PATH, "push"], check=True)
-        print("✅ CSV файлът е push-нат успешно към GitHub")
-    except subprocess.CalledProcessError as e:
-        print(f"❌ Грешка при Git push: {e}")
-
-
-def trigger_vercel_redeploy():
-    try:
-        trigger_path = Path(f"{PROJECT_PATH}/.verceltrigger")
-        trigger_path.write_text(str(datetime.utcnow()))
-        subprocess.run(["git", "-C", PROJECT_PATH, "add",
-                       ".verceltrigger"], check=True)
-        subprocess.run(["git", "-C", PROJECT_PATH, "commit",
-                       "-m", "🌀 Trigger Vercel redeploy"], check=True)
-        subprocess.run(["git", "-C", PROJECT_PATH, "push"], check=True)
-        print("🔁 Dummy файл + push за Vercel пратен успешно")
-    except subprocess.CalledProcessError as e:
-        print(f"❌ Грешка при dummy redeploy: {e}")
 
 
 def process_earned_axp_stat(earned_axp_stat):
@@ -262,12 +235,6 @@ def main():
             total_written += 1
             print(f"✅ Записан Axie {axie_id}")
     print(f"\n📁 Данните са записани във файл: {OUTPUT_CSV}")
-    print(f"📤 Качваме CSV файла в GitHub...")
-    upload_csv_to_github()
-
-    print(f"🔁 Правим dummy commit за Vercel...")
-    trigger_vercel_redeploy()
-
     print(f"\nОбщо записани в CSV файла: {total_written}")
 
 
