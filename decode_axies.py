@@ -4,6 +4,7 @@ import requests
 import csv
 import time
 import json
+import subprocess
 from pathlib import Path
 from parser import json_structure
 from collections import Counter
@@ -12,6 +13,7 @@ GRAPHQL_API = "https://api-gateway.skymavis.com/graphql/axie-marketplace"
 API_KEY = "9OmYe8nfDz41ntODED0ka6NGzBHkLjHP"
 OWNER = '0xfda275dc5b3162fddf7a5b9b10734efc85573a46'
 OUTPUT_CSV = "decoded_axies.csv"
+TRIGGER_FILE = ".verceltrigger"
 
 BATCH_SIZE_FIRST_REQUEST = 600
 BATCH_SIZE_SECOND_REQUEST = 50
@@ -45,13 +47,13 @@ def fetch_axie_data(owner_address=OWNER):
     all_ids = []
     while True:
         query = {
-            "query": """
+            "query": '''
                 query GetAxies($owner: String!, $from: Int!, $size: Int!) {
                     axies(owner: $owner, from: $from, size: $size) {
                         results { id }
                     }
                 }
-            """,
+            ''',
             "variables": {
                 "owner": owner_address,
                 "from": from_index,
@@ -125,15 +127,15 @@ def fetch_axie_data_batch(axie_ids):
 
 
 def build_graphql_query(ids):
-    queries = [f"""
+    queries = [f'''
         axie_{i}: axie(axieId: "{id}") {{
             id class breedCount purity newGenes
             earnedAxpStat(lastNDays: 18)
             delegationState {{ delegateeProfile {{ addresses {{ ronin }} }} }}
             axpInfo {{ level shouldAscend xpToAscend }}
         }}
-    """ for i, id in enumerate(ids)]
-    return f"query GetAxieBatch {{ {' '.join(queries)} }}"
+    ''' for i, id in enumerate(ids)]
+    return f"query GetAxieBatch {{ {''.join(queries)} }}"
 
 
 def decode_gene_string(hex_string):
@@ -174,6 +176,34 @@ def generate_memento_string(axie_class, decoded_parts):
     result = ', '.join([f"{round(p, 1)}% {cls}" for cls,
                        p in sorted_items if p > 0])
     return result
+
+
+def upload_csv_to_github():
+    try:
+        subprocess.run(["git", "config", "--global",
+                       "user.email", "actions@github.com"], check=True)
+        subprocess.run(["git", "config", "--global",
+                       "user.name", "GitHub Actions"], check=True)
+        subprocess.run(["git", "add", OUTPUT_CSV], check=True)
+        subprocess.run(
+            ["git", "commit", "-m", "♻️ Auto-update decoded_axies.csv"], check=True)
+        subprocess.run(["git", "push"], check=True)
+        print("✅ CSV файлът е push-нат успешно към GitHub")
+    except subprocess.CalledProcessError as e:
+        print(f"❌ Грешка при Git push: {e}")
+
+
+def trigger_vercel_redeploy():
+    trigger_path = Path(TRIGGER_FILE)
+    try:
+        trigger_path.write_text(str(datetime.utcnow()))
+        subprocess.run(["git", "add", TRIGGER_FILE], check=True)
+        subprocess.run(
+            ["git", "commit", "-m", "🔁 Trigger Vercel redeploy"], check=True)
+        subprocess.run(["git", "push"], check=True)
+        print("✅ Тригер за Vercel redeploy изпратен")
+    except Exception as e:
+        print(f"⚠️ Неуспешно създаване на тригер файл: {e}")
 
 
 def main():
@@ -235,6 +265,8 @@ def main():
             total_written += 1
             print(f"✅ Записан Axie {axie_id}")
     print(f"\n📁 Данните са записани във файл: {OUTPUT_CSV}")
+    upload_csv_to_github()
+    trigger_vercel_redeploy()
     print(f"\nОбщо записани в CSV файла: {total_written}")
 
 
