@@ -4,37 +4,41 @@ import {
   sortAxiesByAXPToday
 } from '/JS/global-menu/sorting-global-menu.js';
 
+import { fetchLastCommitTime } from './lastUpdate.js';
+
 export function setupGlobalMenu() {
   const container = document.getElementById('globalMenu');
   if (!container) return;
 
   container.innerHTML = `
-    <div id="gm4" class="gm4">
-      <section class="gm4-cell gm4-left" data-cell="left">
-        <div class="gm4-count-stack">
-          <div id="axieCountLabel">Axie Count: <span id="axieCount">0</span></div>
-        </div>
-      </section>
+  <div id="gm4" class="gm4">
+    <section class="gm4-cell gm4-left" data-cell="left">
+      <div class="gm4-count-stack">
+        <div id="axieCountLabel">Axie Count: <span id="axieCount">0</span></div>
+      </div>
+    </section>
 
-      <section class="gm4-cell gm4-controls" data-cell="controls">
-        <div class="sort-controls" id="sortControls">
-          <button id="sortAsc">⬇️ Level</button>
-          <button id="sortDesc">⬆️ Level</button>
-          <button id="sortAxpTodayAsc">⬇️ AXP/Today</button>
-          <button id="sortAxpTodayDesc">⬆️ AXP/Today</button>
-        </div>
-      </section>
+    <section class="gm4-cell gm4-controls" data-cell="controls">
+      <div class="sort-controls" id="sortControls">
+        <button id="sortAsc">⬇️ Level</button>
+        <button id="sortDesc">⬆️ Level</button>
+        <button id="sortAxpTodayAsc">⬇️ AXP/Today</button>
+        <button id="sortAxpTodayDesc">⬆️ AXP/Today</button>
+        <div id="lastUpdate" style="font-size: 12px; opacity: 0.6;">⏱️ Loading...</div>
+      </div>
+    </section>
 
-      <section class="gm4-cell gm4-views" data-cell="views">
-  <div id="totalAxpTodayDisplay" style="margin-right: 12px; font-weight: bold; font-size: 14px;">
-    📊 AXP Today: <span id="axpTodaySum">0</span>
+    <section class="gm4-cell gm4-views" data-cell="views">
+      <div id="totalAxpTodayDisplay" style="margin-right: 12px; font-weight: bold; font-size: 14px;">
+        📊 AXP Today: <span id="axpTodaySum">0</span>
+      </div>
+      <div id="viewSwitcher" class="view-switcher"></div>
+    </section>
   </div>
-  <div id="viewSwitcher" class="view-switcher"></div>
-</section>
-    </div>
-  `;
+`;
 
-  styleGrid();
+styleGrid();
+fetchLastCommitTime(); // ⏱️ Добавено извикване
 
   const buttons = {
     sortAsc: document.getElementById('sortAsc'),
