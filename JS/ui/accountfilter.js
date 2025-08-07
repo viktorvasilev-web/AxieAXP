@@ -3,9 +3,10 @@ const delegationMap = {
     "0xf5b3b8a580778d8723fec48936d6d7c6b1e0f995": "ViktorAccount2",
     "0xb3296808909ea5a910666ecdc1fef1a847d52237": "Kazima",
     "0xe47c02a904b1401f49cef081eef2051423957022": "Account 44 | Projects Eri",
-    "0x037dc10b4c530e9a0735249d0f41efc25f727912": "Metis | Cryptosis",
-    "0xb9bb961a410117b32f50c997dd68d0a68f0a8a53": "TOYOIN 9",
-    "0x6416c37a5ae79c82d5c447f3e75976fdeffa377e": "Chaechae",
+    "0x8b5473032df30aa28df7de86ab28d78551b302e7": "Lopez | Cryptosis",
+    "0xb382cc6bda02524ff4cc99a910ec6808118502e0": "Account 56 | Projects Eri",
+    "0x7ece291edd644e6566ab5971460d2e2182d961e3": "Lunacian #4",
+"0xc2400c69ef9d429a36060ab5037eeaa4eebf3467": "Charizard",
 };
 
 export function renderAccountFilterDropdown() {
