@@ -1,7 +1,7 @@
 export async function fetchLastCommitTime() {
   const username = "viktorvasilev-web";
   const repo = "AxieAXP";
-  const branch = "main";
+  const branch = "master"; // ← коригирано от "main"
 
   const apiUrl = `https://api.github.com/repos/${username}/${repo}/commits/${branch}`;
   try {
